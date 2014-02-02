@@ -6,7 +6,7 @@ from matplotlib.dates import DayLocator, HourLocator, DateFormatter, drange,\
 MinuteLocator, SecondLocator
 from numpy import arange
 import numpy
-client_ip = "" #insert DB ip or leave blank if default
+client_ip = "192.168.1.13" #insert DB ip or leave blank if default
 def apply_moving_average(List,w=5):
     """
     givien a list of numbers, applies a simple moving average with a window of w
@@ -39,10 +39,10 @@ def MongoGraph(window,smoothing="off"):
     window options are day 12Hour, 6Hour, Hour, 30min,5min. \
 smoothing sets the window of a simple moving average
     """
-	try:
-		c = MongoClient(client_ip)
-	except:
-		c = MongoClient()
+    try:
+	c = MongoClient(client_ip)
+    except:
+	c = MongoClient()
     db = c.temp
     temps = db.temps
     templist=[]
