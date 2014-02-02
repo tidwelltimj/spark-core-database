@@ -2,7 +2,8 @@ spark-core-database
 ===================
 simple set of applications to collect, store and display temperature data using a Spark core and MongoDB
 
-Setup
+Setup:
+
 copy and paste the firmware file into the web IDE and flash the core.
 
 next setup mongodb, following instructions at http://www.mongodb.org/  
