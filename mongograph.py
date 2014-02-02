@@ -6,10 +6,10 @@ from matplotlib.dates import DayLocator, HourLocator, DateFormatter, drange,\
 MinuteLocator, SecondLocator
 from numpy import arange
 import numpy
-client_ip = "" #enter IP address of DB or leave if default
+client_ip = "" #insert DB ip or leave blank if default
 def apply_moving_average(List,w=5):
     """
-    given a list of numbers, applies a simple moving average with a window of w
+    givien a list of numbers, applies a simple moving average with a window of w
     """
     Window = int(w) #window of average
     if Window %2 ==0:
@@ -36,27 +36,41 @@ def apply_moving_average(List,w=5):
      
 def MongoGraph(window,smoothing="off"): 
     """
-    window options are 12Hour, 6Hour, Hour, 30min,5min
+    window options are day 12Hour, 6Hour, Hour, 30min,5min. \
+smoothing sets the window of a simple moving average
     """
-    try:
-        c = MongoClient(client_ip)
-    except:
-        c=MongoClient()
+	try:
+		c = MongoClient(client_ip)
+	except:
+		c = MongoClient()
     db = c.temp
     temps = db.temps
     templist=[]
     datelist=[]
     Now = datetime.now()
+    if window == "day":
+        day_ago = Now-timedelta(hours=24)
+        for temp in temps.find({"datetime":{"$gt":day_ago}}):
+            templist.append(((9.0/5.0)*temp["temperature"])+32)
+            datelist.append(temp["datetime"])
+        try:
+            templist2 = apply_moving_average(templist, w=smoothing)
+        except:
+            templist2 = templist  
+        fig, ax = plt.subplots()
+        ax.plot_date(datelist,templist2,"-")
+        ax.xaxis.set_major_locator(HourLocator(arange(0,24,2)))
+        ax.xaxis.set_minor_locator( MinuteLocator(arange(0,60,20)))
+        ax.xaxis.set_major_formatter( DateFormatter('%H:%M') )  
     if window == "12hour":
         twelve_hour_ago = Now-timedelta(hours=12)
         for temp in temps.find({"datetime":{"$gt":twelve_hour_ago}}):
             templist.append(((9.0/5.0)*temp["temperature"])+32)
             datelist.append(temp["datetime"])
-        else:
-            try:
-                templist2 = apply_moving_average(templist, w=smoothing)
-            except:
-                templist2 = templist  
+        try:
+            templist2 = apply_moving_average(templist, w=smoothing)
+        except:
+            templist2 = templist  
         fig, ax = plt.subplots()
         ax.plot_date(datelist,templist2,"-")
         ax.xaxis.set_major_locator(HourLocator())
@@ -67,13 +81,10 @@ def MongoGraph(window,smoothing="off"):
         for temp in temps.find({"datetime":{"$gt":six_hour_ago}}):
             templist.append(((9.0/5.0)*temp["temperature"])+32)
             datelist.append(temp["datetime"])
-        if smoothing=="off":
-            templist2 = templist 
-        else:
-            try:
-                templist2 = apply_moving_average(templist, w=smoothing)
-            except:
-                templist2 = templist  
+        try:
+            templist2 = apply_moving_average(templist, w=smoothing)
+        except:
+            templist2 = templist  
         fig, ax = plt.subplots()
         ax.plot_date(datelist,templist2,"-")
         ax.xaxis.set_major_locator(HourLocator())
@@ -84,13 +95,10 @@ def MongoGraph(window,smoothing="off"):
         for temp in temps.find({"datetime":{"$gt":hour_ago}}):
             templist.append(((9.0/5.0)*temp["temperature"])+32)
             datelist.append(temp["datetime"])
-        if smoothing=="off":
-            templist2 = templist 
-        else:
-            try:
-                templist2 = apply_moving_average(templist, w=smoothing)
-            except:
-                templist2 = templist  
+        try:
+            templist2 = apply_moving_average(templist, w=smoothing)
+        except:
+            templist2 = templist  
         fig, ax = plt.subplots()
         ax.plot_date(datelist,templist2,"-")
         ax.xaxis.set_major_locator( MinuteLocator(arange(0,60,5)))
@@ -120,5 +128,4 @@ def MongoGraph(window,smoothing="off"):
     plt.show()
     
     return;
-MongoGraph("12hour",smoothing=25)
-MongoGraph("12hour",smoothing="off")
+MongoGraph("day",smoothing=20)
