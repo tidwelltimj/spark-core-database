@@ -4,8 +4,8 @@ import json
 from pymongo import MongoClient
 from datetime import datetime
 
-access_token ="YOUR TOKEN HERE"
-device_id = "YOUR ID HERE"
+access_token ="PASTE ACCESS TOKEN HERE"
+device_id = "PASTE DEVICE ID HERE"
 p = {"access_token":access_token}
 url = "https://api.spark.io/v1/devices/"+device_id+"/temp"
 
@@ -16,9 +16,14 @@ while(True):
         DB = DBclient.temp
         temps = DB.temps
     except:
+	print "can not connect to DB make sure MongoDB is running"
         continue
-    r = requests.get(url,params=p)   
-
+    try:
+	r = requests.get(url,params=p)   
+    except:
+	print "request failed, check internet connection"
+	continue
+		
     datadict = json.loads(r.text)
     try:
         temp = float(datadict[u"result"])
@@ -30,6 +35,6 @@ while(True):
         print ID
         
     except KeyError:
-        print "error"
+        print "error: spark data is invalid or core is not connected"
     DBclient.close()
     time.sleep(10)
