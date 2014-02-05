@@ -195,14 +195,7 @@ class MainHandler(BaseHandler):
 		    pass
         
                 self.redirect("/")
-class PostHandler(tornado.web.RequestHandler):
-	def get(self):
-		
-		self.write("sumbmitted")
-		self.redirect("/post")
-	def post(self):
-            list = self.get_argument("name")
-            print list
+
 class LoginHandler(BaseHandler):
 	def get(self):
 		self.render("login.html")
@@ -217,9 +210,8 @@ class LoginHandler(BaseHandler):
 		
 application = tornado.web.Application([
 	(r"/", MainHandler),
-	(r"/post", PostHandler),
 	(r"/login/", LoginHandler),
-	(r"/graph.svg", tornado.web.StaticFileHandler, {"path":x}),
+	
 ],debug=True,static_path=x,login_url=r"/login/",cookie_secret="35wfaa35tgty5wf5yhxbt4")
 
 if __name__ == "__main__":
