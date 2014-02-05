@@ -3,9 +3,7 @@ import time
 import json
 from pymongo import MongoClient
 from datetime import datetime
-DBclient = MongoClient() #fill in DB address if other than default
-DB = DBclient.temp
-temps = DB.temps
+
 access_token ="YOUR TOKEN HERE"
 device_id = "YOUR ID HERE"
 p = {"access_token":access_token}
@@ -13,7 +11,12 @@ url = "https://api.spark.io/v1/devices/"+device_id+"/temp"
 
 
 while(True):
-    
+    try:
+        DBclient = MongoClient() #fill in DB address if other than default
+        DB = DBclient.temp
+        temps = DB.temps
+    except:
+        continue
     r = requests.get(url,params=p)   
 
     datadict = json.loads(r.text)
@@ -28,4 +31,5 @@ while(True):
         
     except KeyError:
         print "error"
+    DBclient.close()
     time.sleep(10)
