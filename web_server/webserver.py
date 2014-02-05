@@ -13,7 +13,7 @@ from matplotlib.dates import DayLocator, HourLocator, DateFormatter, drange,\
 MinuteLocator, SecondLocator
 from numpy import arange
 
-client_ip = "insert mongoDB client here"
+client_ip = "insert mongoDB client IP here"
 def apply_moving_average(List,w=5):
     """
     givien a list of numbers, applies a simple moving average with a window of w
