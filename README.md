@@ -13,3 +13,5 @@ the script for pinging the spark core uses python and the required dependencies 
 mongograph.py is a very basic script to collect the data from the database and graph it. It's very much in a beta stage but the hope is to eventually be able to load the graphs through a web browser
 
 
+webserver.py is a tornado based sever to display graphs of the data in the mongoDB.  It is currently set up to run in a linux environment but can be ran on windows with small changes to the directory settings
+
