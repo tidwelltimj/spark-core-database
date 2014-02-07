@@ -23,8 +23,11 @@ while(True):
     except:
 	print "request failed, check internet connection"
 	continue
-		
-    datadict = json.loads(r.text)
+    try:	
+	datadict = json.loads(r.text)
+    except:
+	print "request did not return valid JSON data"
+	continue
     try:
         temp = float(datadict[u"result"])
 
